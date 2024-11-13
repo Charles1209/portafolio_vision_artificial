@@ -1,4 +1,5 @@
 import flet as ft
+from flet import UserControl # new
 import base64
 import cv2
 import numpy as np
@@ -6,7 +7,8 @@ import numpy as np
 cap = cv2.VideoCapture(0)
 aplicarFiltro = 0
 
-class Countdown(ft.UserControl):
+#class Countdown(ft.UserControl):
+class Countdown(UserControl):
     def __init__(self):
         super().__init__()
 

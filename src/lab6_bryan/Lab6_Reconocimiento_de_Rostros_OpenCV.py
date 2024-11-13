@@ -38,8 +38,8 @@ def prepare_training_data(data_folder_path, save_folder_path):
         if not dir_name.startswith("s"):
             continue
         label = int(dir_name.replace("s", ""))
-        subject_dir_path = os.path.join(data_folder_path, dir_name)
-        subject_images_names = os.listdir(subject_dir_path)
+        path_dir_subject = os.path.join(data_folder_path, dir_name)
+        subject_images_names = os.listdir(path_dir_subject)
         subject_save_path = os.path.join(save_folder_path, dir_name)
         if not os.path.exists(subject_save_path):
             os.makedirs(subject_save_path)
@@ -47,11 +47,11 @@ def prepare_training_data(data_folder_path, save_folder_path):
         for image_name in subject_images_names:
             if image_name.startswith("."):
                 continue
-            image_path = os.path.join(subject_dir_path, image_name)
+            image_path = os.path.join(path_dir_subject, image_name)
             image = cv2.imread(image_path)
             cv2.imshow("Training on image...", image)
             cv2.waitKey(100)
-            face, rect = detect_face(image)
+            face, _ = detect_face(image)
             if face is not None:
                 faces.append(face)
                 labels.append(label)
@@ -64,19 +64,8 @@ def prepare_training_data(data_folder_path, save_folder_path):
 
 # Paths
 
-path_training_data = "src/lab6_bryan/Lab6_C_Files/training-data"
-training_data = cv2.FileStorage(path_training_data, cv2.FILE_STORAGE_READ)
-if not os.path.exists(path_training_data):
-	raise FileNotFoundError(f"The file {path_training_data} does not exist.")
-elif not training_data.isOpened():
-	raise IOError(f"No se puede abrir el archivo {path_training_data} en modo lectura.")
-
-path_cropped_faces = "src/lab6_bryan/Lab6_C_Files/cropped-faces"
-cropped_faces = cv2.FileStorage(path_cropped_faces, cv2.FILE_STORAGE_READ)
-if not os.path.exists(path_cropped_faces):
-	raise FileNotFoundError(f"The file {path_cropped_faces} does not exist.")
-elif not cropped_faces.isOpened():
-	raise IOError(f"No se puede abrir el archivo {path_cropped_faces} en modo lectura.")
+path_training_data = "src/lab6_bryan/Lab6_C_Files/training_data"
+path_cropped_faces = "src/lab6_bryan/Lab6_C_Files/cropped_faces"
 
 #prepare training data
 print("Preparing data...")
@@ -87,6 +76,7 @@ faces, labels = prepare_training_data (
 print("Data prepared")
 print("Total faces: ", len(faces))
 print("Total labels: ", len(labels))
+print(labels)
 
 #create the recognizer (use FisherFaceRecognizer)
 face_recognizer = cv2.face.FisherFaceRecognizer_create()

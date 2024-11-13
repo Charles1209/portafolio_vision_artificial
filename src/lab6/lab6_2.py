@@ -9,22 +9,24 @@ import numpy as np
 ################################################################################################
 
 #there is no label 0 in our training data so subject name for index/label 0 is empty
+#subjects = ["", "Ruben Blades", "Elvis Presley", "Liam Payne"]
 subjects = ["", "Ruben Blades", "Elvis Presley"]
 
 ################################################################################################
 
+# El .xml del profe no sirve, hay que descargarse el de internet
 face_cascade_path = "src/lab6/Lab6_C_Files/opencv-files/lbpcascade_frontalface.xml"
 
-face_cascade = cv2.CascadeClassifier(face_cascade_path)
-os.chmod(face_cascade_path, 0o666)
-fs = cv2.FileStorage(face_cascade_path, cv2.FILE_STORAGE_WRITE)
+# face_cascade = cv2.CascadeClassifier(face_cascade_path)
+# os.chmod(face_cascade_path, 0o666)
+# fs = cv2.FileStorage(face_cascade_path, cv2.FILE_STORAGE_WRITE)
 
-if not os.path.exists(face_cascade_path):
-	raise FileNotFoundError(f"The file {face_cascade_path} does not exist.")
-elif face_cascade.empty():
-	raise IOError(f"Unable to load the face cascade classifier from {face_cascade_path}")
-elif not fs.isOpened():
-	raise IOError(f"No se puede abrir el archivo {face_cascade_path} en modo lectura.")
+# if not os.path.exists(face_cascade_path):
+# 	raise FileNotFoundError(f"The file {face_cascade_path} does not exist.")
+# elif face_cascade.empty():
+# 	raise IOError(f"Unable to load the face cascade classifier from {face_cascade_path}")
+# elif not fs.isOpened():
+# 	raise IOError(f"No se puede abrir el archivo {face_cascade_path} en modo lectura.")
 
 #function to detect face using OpenCV
 def detect_face(img):
@@ -36,8 +38,8 @@ def detect_face(img):
 	#face_cascade = cv2.CascadeClassifier('opencv-files/lbpcascade_frontalface.xml')
 	face_cascade = cv2.CascadeClassifier(face_cascade_path)
 
-	if face_cascade.empty():
-		raise IOError(f"Unable to load the face cascade classifier from {face_cascade_path}")
+	# if face_cascade.empty():
+	# 	raise IOError(f"Unable to load the face cascade classifier from {face_cascade_path}")
 
 	#let's detect multiscale (some images may be closer to camera than others) images
 	#result is a list of faces
@@ -85,11 +87,11 @@ def prepare_training_data(data_folder_path):
 		label = int(dir_name.replace("s", ""))
 		
 		#build path of directory containin images for current subject subject
-		#sample subject_dir_path = "training-data/s1"
-		subject_dir_path = data_folder_path + "/" + dir_name
+		#sample path_dir_subject = "training_data/s1"
+		path_dir_subject = data_folder_path + "/" + dir_name
 		
 		#get the images names that are inside the given subject directory
-		subject_images_names = os.listdir(subject_dir_path)
+		subject_images_names = os.listdir(path_dir_subject)
 		
 		#------STEP-3--------
 		#go through each image name, read image, 
@@ -101,15 +103,19 @@ def prepare_training_data(data_folder_path):
 				continue
 			
 			#build image path
-			#sample image path = training-data/s1/1.pgm
-			image_path = subject_dir_path + "/" + image_name
+			#sample image path = training_data/s1/1.pgm
+			image_path = path_dir_subject + "/" + image_name
 
 			#read image
 			image = cv2.imread(image_path)
 
 			#display an image window to show the image 
-			cv2.imshow("Training on image...", image)
-			cv2.waitKey(100)
+			if image is None:
+				print(f"Error loading image: {image_path}")
+			else:
+				#print(f"Printing Image {image_path}")
+				cv2.imshow("Training on image...", image)
+				cv2.waitKey(100)
 			
 			#detect face
 			face, rect = detect_face(image)
@@ -132,13 +138,13 @@ def prepare_training_data(data_folder_path):
 ################################################################################################
 
 
-training_data_path = "src/lab6/Lab6_C_Files/training-data"
-if not os.path.exists(training_data_path):
-	raise FileNotFoundError(f"The directory {training_data_path} does not exist.")
+training_data_path = "src/lab6/Lab6_C_Files/training_data"
+# if not os.path.exists(training_data_path):
+# 	raise FileNotFoundError(f"The directory {training_data_path} does not exist.")
 
 # if not os.path.exists(file_path):
 # 	raise FileNotFoundError(f"El archivo {file_path} no existe.")
-os.chmod(training_data_path, 0o666)
+# os.chmod(training_data_path, 0o666)
 
 # fs = cv2.FileStorage(file_path, cv2.FILE_STORAGE_WRITE)
 # if not fs.isOpened():
@@ -151,6 +157,9 @@ os.chmod(training_data_path, 0o666)
 print("Preparing data...")
 faces, labels = prepare_training_data(training_data_path)
 print("Data prepared")
+
+print(faces)
+print(labels)
 
 #print total faces and labels
 print("Total faces: ", len(faces))
@@ -217,16 +226,19 @@ print("Predicting images...")
 #load test images
 test_img1 = cv2.imread("src/lab6/Lab6_C_Files/test-data/test0.jpg")
 test_img2 = cv2.imread("src/lab6/Lab6_C_Files/test-data/test6.jpg")
+test_img3 = cv2.imread("src/lab6/Lab6_C_Files/test-data/test9.jpg")
 
 ###Si no detecta caras en la imagen dará un error
 
 #perform a prediction
 predicted_img1 = predict(test_img1)
 predicted_img2 = predict(test_img2)
+#predicted_img3 = predict(test_img3)
 print("Prediction complete")
 
 #display both images
 cv2.imshow(subjects[1], predicted_img1)
 cv2.imshow(subjects[2], predicted_img2)
+#cv2.imshow(subjects[3], predicted_img3)
 cv2.waitKey(0)
 cv2.destroyAllWindows()

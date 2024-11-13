@@ -40,13 +40,13 @@ def prepare_training_data(data_folder_path):
         if not dir_name.startswith("s"):
             continue
         label = int(dir_name.replace("s", ""))
-        subject_dir_path = data_folder_path + "/" + dir_name
-        subject_images_names = os.listdir(subject_dir_path)
+        path_dir_subject = data_folder_path + "/" + dir_name
+        subject_images_names = os.listdir(path_dir_subject)
         # Iterate over each image in the subject's directory
         for image_name in subject_images_names:
             if image_name.startswith("."):
                 continue
-            image_path = subject_dir_path + "/" + image_name
+            image_path = path_dir_subject + "/" + image_name
             image = cv2.imread(image_path)
             cv2.imshow("Training on image...", image)
             cv2.waitKey(100)

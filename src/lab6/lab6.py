@@ -67,11 +67,11 @@ def prepare_training_data(data_folder_path):
 		label = int(dir_name.replace("s", ""))
 
 		#build path of directory containin images for current subject subject
-		#sample subject_dir_path = "training-data/s1"
-		subject_dir_path = data_folder_path + "/" + dir_name
+		#sample path_dir_subject = "training-data/s1"
+		path_dir_subject = data_folder_path + "/" + dir_name
 
 		#get the images names that are inside the given subject directory
-		subject_images_names = os.listdir(subject_dir_path)
+		subject_images_names = os.listdir(path_dir_subject)
 
 		#------STEP-3--------
 		#go through each image name, read image,
@@ -83,7 +83,7 @@ def prepare_training_data(data_folder_path):
 
 			#build image path
 			#sample image path = training-data/s1/1.pgm
-			image_path = subject_dir_path + "/" + image_name
+			image_path = path_dir_subject + "/" + image_name
 
 			#read image
 			image = cv2.imread(image_path)
